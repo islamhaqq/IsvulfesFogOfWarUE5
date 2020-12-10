@@ -4,8 +4,4 @@ Made by Isvulfe from the UE4 community in 02-16-2017 in a [forum thread](https:/
 
 ![example](https://i.imgur.com/XOraPm0.png)
 
-## Changes Syed made
-
-* Got it working on UE4 4.26
-* Added a topdown example and made it as default map
-
+* Working in UE4 4.26
