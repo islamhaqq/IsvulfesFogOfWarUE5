@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{F8D8FA09-4F37-8A88-502B-429B8175E3FE}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "FOWFork",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
