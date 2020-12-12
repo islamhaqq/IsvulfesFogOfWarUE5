@@ -4,14 +4,5 @@ Made by Isvulfe from the UE4 community in 02-16-2017 in a [forum thread](https:/
 
 ![example](https://i.imgur.com/XOraPm0.png)
 
-## Why?
-
-1. .zip links occasionally break
-2. Project keeps breaking with new engine updates and deprecated methods
-3. So its saved somewhere and people contribute to it
-
-## Changes Syed made
-
-* Got it working on UE4 4.26
-* Added a topdown example and made it as default map
-
+* Working in UE4 4.26
+* Fog of War features such as terra incognita, sight radius, time until back to terra incognita, etc. Doesn't work for multiplayer yet
