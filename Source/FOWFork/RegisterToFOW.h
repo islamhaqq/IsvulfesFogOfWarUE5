@@ -40,4 +40,8 @@ public:
 	/**/
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = FogOfWar)
 		bool isActorInTerraIncog = false;
+
+	//How far will the actor be able to see
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FogOfWar)
+		float SightRange = 9.0f;
 };
