@@ -67,7 +67,7 @@ void AFogOfWarWorker::UpdateFowTexture() {
 			return;
 		}
 		//Find actor position
-		if (!*Itr) return;
+		if (!*Itr || !(*Itr)->FindComponentByClass<URegisterToFOW>()) return;
 		FVector position = (*Itr)->GetActorLocation();
 
 		//Get sight range from FOWComponent
