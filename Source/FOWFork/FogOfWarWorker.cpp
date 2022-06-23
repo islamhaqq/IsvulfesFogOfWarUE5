@@ -57,7 +57,7 @@ void AFogOfWarWorker::UpdateFowTexture() {
 	int signedSize = (int)Manager->TextureSize; //For convenience....
 	TSet<FVector2D> currentlyInSight;
 	TSet<FVector2D> texelsToBlur;
-	int sightTexels = Manager->SightRange * Manager->SamplesPerMeter;
+	FVector2D sightTexels;
 	float dividend = 100.0f / Manager->SamplesPerMeter;
 
 
@@ -67,8 +67,15 @@ void AFogOfWarWorker::UpdateFowTexture() {
 			return;
 		}
 		//Find actor position
-		if (!*Itr) return;
+		if (!*Itr || !(*Itr)->FindComponentByClass<URegisterToFOW>()) return;
 		FVector position = (*Itr)->GetActorLocation();
+
+		//Get sight range from FOWComponent
+		URegisterToFOW* FOWComponent = (*Itr)->FindComponentByClass<URegisterToFOW>();
+		if (IsValid(FOWComponent))
+		{
+			sightTexels = FOWComponent->SightRange * Manager->SamplesPerMeter;
+		}
 
 		//We divide by 100.0 because 1 texel equals 1 meter of visibility-data.
 		int posX = (int)(position.X / dividend) + halfTextureSize;
@@ -83,8 +90,8 @@ void AFogOfWarWorker::UpdateFowTexture() {
 		int halfKernelSize = (Manager->blurKernelSize - 1) / 2;
 
 		//Store the positions we want to blur
-		for (int y = posY - sightTexels - halfKernelSize; y <= posY + sightTexels + halfKernelSize; y++) {
-			for (int x = posX - sightTexels - halfKernelSize; x <= posX + sightTexels + halfKernelSize; x++) {
+		for (int y = posY - sightTexels.Y - halfKernelSize; y <= posY + sightTexels.Y + halfKernelSize; y++) {
+			for (int x = posX - sightTexels.X - halfKernelSize; x <= posX + sightTexels.X + halfKernelSize; x++) {
 				if (x > 0 && x < size && y > 0 && y < size) {
 					texelsToBlur.Add(FIntPoint(x, y));
 				}
@@ -101,19 +108,20 @@ void AFogOfWarWorker::UpdateFowTexture() {
 			isWriteUnFog = (*Itr)->FindComponentByClass<URegisterToFOW>()->WriteUnFog;
 			isWriteFow = (*Itr)->FindComponentByClass<URegisterToFOW>()->WriteFow;
 			isWriteTerraIncog = (*Itr)->FindComponentByClass<URegisterToFOW>()->WriteTerraIncog;
+			bUseLineOfSight = (*Itr)->FindComponentByClass<URegisterToFOW>()->bUseLineOfSight;
 		}
 
 
 
 		if (isWriteUnFog) {
 			//Unveil the positions our actors are currently looking at
-			for (int y = posY - sightTexels; y <= posY + sightTexels; y++) {
-				for (int x = posX - sightTexels; x <= posX + sightTexels; x++) {
+			for (int y = posY - sightTexels.Y; y <= posY + sightTexels.Y; y++) {
+				for (int x = posX - sightTexels.X; x <= posX + sightTexels.X; x++) {
 					//Kernel for radial sight
 					if (x > 0 && x < size && y > 0 && y < size) {
 						FVector2D currentTextureSpacePos = FVector2D(x, y);
 						int length = (int)(textureSpacePos - currentTextureSpacePos).Size();
-						if (length <= sightTexels) {
+						if (length <= sightTexels.Size() / 2) {
 							FVector currentWorldSpacePos = FVector(
 								((x - (int)halfTextureSize)) * dividend,
 								((y - (int)halfTextureSize)) * dividend,
@@ -128,7 +136,7 @@ void AFogOfWarWorker::UpdateFowTexture() {
 							//However, the tracing doesn't seem like it takes much time at all (~0.02ms with four actors tracing circles of 18 texels each),
 							//it's the blurring that chews CPU..
 
-							if (!Manager->GetWorld()->LineTraceTestByChannel(position, currentWorldSpacePos, ECC_WorldStatic, queryParams)) {
+							if (!bUseLineOfSight || !Manager->GetWorld()->LineTraceTestByChannel(position, currentWorldSpacePos, ECC_WorldStatic, queryParams)) {
 
 								//Is the actor able to affect the terra incognita
 

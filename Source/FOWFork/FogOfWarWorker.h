@@ -37,6 +37,7 @@ public:
 	bool isWriteFow = false;
 	bool isWriteTerraIncog = false;
 	bool bCheckActorInTerraIncog = false;//Bool, is the actor in terra incognita territory
+	bool bUseLineOfSight = true;
 
 	void ShutDown();
 };

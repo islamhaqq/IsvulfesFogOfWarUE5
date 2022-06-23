@@ -37,7 +37,14 @@ public:
 	/*Check if the actor is in terra incognita*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FogOfWar)
 		bool bCheckActorTerraIncog = false;
+	/*Should the actor reveal texels that are out of LOS*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FogOfWar)
+		bool bUseLineOfSight = true;
 	/**/
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = FogOfWar)
 		bool isActorInTerraIncog = false;
+	/*How far will the actor be able to see*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FogOfWar)
+		FVector2D SightRange = FVector2D(9.0f);
+	
 };
