@@ -2,40 +2,40 @@
 
 #pragma once
 
-#include "Runnable.h"
+#include "HAL/Runnable.h"
 
 /**
 * Worker thread for updating the fog of war data.
 */
-class AFogOfWarManager;
+class ASimpleFoWManager;
 
-class FOWFORK_API AFogOfWarWorker : public FRunnable
+class SIMPLEFOW_API FSimpleFoWWorker : public FRunnable
 {
 	//Thread to run the FRunnable on
-	FRunnableThread* Thread;
+	FRunnableThread* Thread = nullptr;
 
 	//Pointer to our manager
-	AFogOfWarManager* Manager;
+	ASimpleFoWManager* Manager = nullptr;
 
 	//Thread safe counter
 	FThreadSafeCounter StopTaskCounter;
 
 public:
-	AFogOfWarWorker();
-	AFogOfWarWorker(AFogOfWarManager* manager);
-	virtual ~AFogOfWarWorker();
+	FSimpleFoWWorker() = default;
+	explicit FSimpleFoWWorker(ASimpleFoWManager* manager);
+	virtual ~FSimpleFoWWorker() override;
 
 	//FRunnable interface
-	virtual bool Init();
-	virtual uint32 Run();
-	virtual void Stop();
+	virtual bool Init() override;
+	virtual uint32 Run() override;
+	virtual void Stop() override;
 
 	//Method to perform work
 	void UpdateFowTexture();
 	bool bShouldUpdate = false;
-	bool isWriteUnFog = false;
-	bool isWriteFow = false;
-	bool isWriteTerraIncog = false;
+	bool bIsWriteUnFog = false;
+	bool bIsWriteFow = false;
+	bool bIsWriteTerraIncog = false;
 	bool bCheckActorInTerraIncog = false;//Bool, is the actor in terra incognita territory
 	bool bUseLineOfSight = true;
 
